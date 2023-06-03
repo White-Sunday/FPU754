@@ -12,7 +12,7 @@ module fadder (a, b, sub, rm, s);	// fadder for addition and subtraction
 	wire fp_small_hidden_bit = |fp_small[30:23];
 
 	wire [23:0] large_frac24 = {fp_large_hidden_bit, fp_large[22:0]};	// expansion bit, 24=23+1
-	wire [23:0] small_frac24 = {fp_large_hidden_bit, fp_small[22:0]};
+	wire [23:0] small_frac24 = {fp_small_hidden_bit, fp_small[22:0]};
 
 	wire [7:0] temp_exp = fp_large[30:23];
 
@@ -69,8 +69,8 @@ module fadder (a, b, sub, rm, s);	// fadder for addition and subtraction
 			exp0 = temp_exp + 8'h1;
 		end 
 		else begin
-			if((temp_exp > zeros) && (f0[26])) begin	// s is a normalized number
-				exp0 = temp_exp - zeros;
+			if((temp_exp > {3'b0,zeros}) && (f0[26])) begin	// s is a normalized number
+				exp0 = temp_exp - {3'b0,zeros};
 				frac0 = f0;				// 1.xxxxxxxxxxxxxxxxxxxxxxx xxx
 			end
 			else begin					// s is a denormalized number or 0
@@ -89,7 +89,7 @@ module fadder (a, b, sub, rm, s);	// fadder for addition and subtraction
 		~rm[1] & ~rm[0] & frac0[2] & ~frac0[1] & ~frac0[0] & frac0[3]|
 		~rm[1] & rm[0] & (frac0[2] | frac0[1] | frac0[0]) & sign|
 		rm[1] & ~rm[0] & (frac0[2] | frac0[1] | frac0[0]) & ~sign;
-	wire [24:0] frac_round = {1'b0,frac0[26:3]} + frac_plus_1;
+	wire [24:0] frac_round = {1'b0,frac0[26:3]} + {24'b0,frac_plus_1};
 	wire [7:0] exponent = frac_round[24]? exp0 + 8'h1 : exp0;
 	wire overflow = &exp0 | &exponent;
 	assign s = final_result(overflow,rm,sign,s_is_nan,s_is_inf,exponent,frac_round[22:0],inf_nan_frac);
@@ -101,6 +101,8 @@ module fadder (a, b, sub, rm, s);	// fadder for addition and subtraction
 		input is_inf;
 		input [7:0] exponent;
 		input [22:0] fraction, inf_nan_frac;
+		/* verilator lint_off CASEX */
+		/* verilator lint_off CASEOVERLAP */
 		casex ({overflow,rm,sign,s_is_nan,s_is_inf})
 			6'b1_00_x_0_x : final_result = {sign,8'hff,23'h000000};		// nearest round: inf
 			6'b1_01_0_0_x : final_result = {sign,8'hfe,23'h7fffff};		// minus inf round: positive max
