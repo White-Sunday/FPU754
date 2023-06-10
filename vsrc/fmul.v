@@ -1,10 +1,12 @@
-module fmul (a, b, rm, s);i
+`include "vsrc/fmul/wallace_24x24.v"
+
+module fmul (a, b, rm, s);
 	input [31:0] a;		// fp a
 	input [31:0] b;		// fp b
 	input [1:0] rm;		// round mode
 	output [31:0] s;	// fp output
 	
-	wire a_epxo_is_00 = ~|a[30:23];		// expo=00
+	wire a_expo_is_00 = ~|a[30:23];		// expo=00
 	wire b_expo_is_00 = ~|b[30:23];
 	wire a_expo_is_ff = &a[30:23];		// expo=ff
 	wire b_expo_is_ff = &b[30:23];
@@ -78,7 +80,7 @@ module fmul (a, b, rm, s);i
 		~rm[1] & ~rm[0] & frac0[2] & ~frac0[1] & ~frac0[0] & frac0[3] |
 		~rm[1] & rm[0] & (frac0[2] | frac0[1] | frac0[0]) & sign |
 		rm[1] & ~rm[0] & (frac0[2] | frac0[1] | frac0[0]) & ~sign;
-	wire [24:0] frac_round = {1'b0,frac[26:3]} + frac_plus_1;
+	wire [24:0] frac_round = {1'b0,frac[26:3]} + {24'h0,frac_plus_1};
 	wire [9:0] exp1 = frac_round[24]? exp0+10'h1 : exp0;
 	wire overflow = (exp0>=10'h0ff) | (exp1>=10'h0ff);
 

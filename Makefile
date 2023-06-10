@@ -1,5 +1,5 @@
 sim:
-	verilator --cc --exe --build --trace ./csrc/wallace_24x24_product.cpp ./vsrc/fmul/wallace_24x24_product.v
+	verilator --cc --exe --build --trace ./csrc/fmul.cpp ./vsrc/fmul.v
 pipelined:
 	verilator --cc --exe --build --trace ./csrc/pipelined_fadder.cpp ./vsrc/pipelined_fadder.v
 test:
