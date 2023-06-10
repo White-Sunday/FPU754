@@ -16,17 +16,17 @@ int main(int argc, char **argv)
 	top->trace(tfp,0);
 	tfp->open("test_wave.vcd");
 
-	top->a = 0xefffffff;
+	top->a = 0x00000001;
 	top->eval();
 	tfp->dump(contextp->time());
 	
 	contextp->timeInc(1);
-	top->a = 0x00000001;
+	top->a = 0xffffffff;
 	top->eval();
 	tfp->dump(contextp->time());
 
 	contextp->timeInc(1);
-	top->a = 0x00000000;
+	top->a = 0x80000000;
 	top->eval();
 	tfp->dump(contextp->time());
 
