@@ -22,7 +22,7 @@ module fmul (a, b, rm, s);
 	wire s_is_inf = a_is_inf | b_is_inf;
 	wire s_is_nan = a_is_nan | b_is_nan | (a_is_inf&b_is_0) | (b_is_inf&a_is_0);
 	
-	wire [22:0] nan_frac = (a[21:0]>b[21:0])?{1'b1,a[21:0]}:{1'b1,b[21:0]};
+	wire [22:0] nan_frac = (a[21:0]>b[21:0])?{1'b1,a[21:0]}:{1'b1,b[21:0]};	// why?
 	wire [22:0] inf_nan_frac = s_is_nan? nan_frac : 23'h0;
 	
 	wire sign = a[31]^b[31];
