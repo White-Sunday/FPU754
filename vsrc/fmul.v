@@ -93,7 +93,7 @@ module fmul (a, b, rm, s);
 		input [7:0] exponent;
 		input [22:0] fraction,inf_nan_frac;
 		/* verilator lint_off CASEX */
-                /* verilator lint_off CASEOVERLAP */
+        /* verilator lint_off CASEOVERLAP */
 		casex ({overflow,rm,sign,s_is_nan,s_is_inf})
 			6'b1_00_x_0_x : final_result = {sign,8'hff,23'h000000};		// inf
 			6'b1_01_0_0_x : final_result = {sign,8'hfe,23'h7fffff};		// max

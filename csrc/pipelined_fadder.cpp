@@ -28,12 +28,14 @@ int main(int argc, char **argv)
 	top->b = 0;
 	top->sub = 0;
 	top->rm = 0;
-	top->clk = 0;
+	top->clk = 1;
 	top->clrn = 0;
 	top->e = 0;
 	top->eval();
 	tfp->dump(contextp->time());
+	step({top->clk=0;top->clrn=0;});
 	
+	step({top->clk=1;top->clrn=1;});
 	step({top->a = 0x7f800000;top->b=0x7f800000;top->sub=0;top->rm=0;top->clk=0;top->clrn=1;top->e=1;});
 	step({top->a = 0x7f800000;top->b=0x7f800000;top->sub=0;top->rm=0;top->clk=1;top->clrn=1;top->e=1;});
 	step({top->a = 0x7f800000;top->b=0x7f800000;top->sub=1;top->rm=0;top->clk=0;top->clrn=1;top->e=1;});
@@ -50,11 +52,9 @@ int main(int argc, char **argv)
 	step({top->a = 0x00000007;top->b=0x00000008;top->sub=0;top->rm=0;top->clk=1;top->clrn=1;top->e=1;});
 	step({top->a = 0x00000007;top->b=0x00000008;top->sub=1;top->rm=0;top->clk=0;top->clrn=1;top->e=1;});
 	step({top->a = 0x00000007;top->b=0x00000008;top->sub=1;top->rm=0;top->clk=1;top->clrn=1;top->e=1;});
-
 	step({top->a = 0x00000007;top->b=0x00000008;top->sub=1;top->rm=0;top->clk=0;top->clrn=1;top->e=1;});
 	step({top->a = 0x00000007;top->b=0x00000008;top->sub=1;top->rm=0;top->clk=1;top->clrn=1;top->e=1;});
 	step({top->a = 0x00000007;top->b=0x00000008;top->sub=1;top->rm=0;top->clk=0;top->clrn=1;top->e=1;});
-	step({top->a = 0x00000007;top->b=0x00000008;top->sub=1;top->rm=0;top->clk=1;top->clrn=1;top->e=1;});
 	step();
 
 	delete top;

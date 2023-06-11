@@ -1,4 +1,4 @@
-`include "/home/white/Data/Code/Verilog/FPU754_wh/vsrc/pipelined_fadd/fadd_align.v"
+`include "/home/white/Data/Code/Verilog/FPU754/vsrc/pipelined_fadd/fadd_align.v"
 `include "vsrc/pipelined_fadd/reg_align_cal.v"
 `include "vsrc/pipelined_fadd/fadd_cal.v"
 `include "vsrc/pipelined_fadd/reg_cal_norm.v"
