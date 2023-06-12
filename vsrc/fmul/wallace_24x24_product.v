@@ -1,6 +1,6 @@
 `include "./vsrc/fmul/wallace_24x24.v"
 
-module wallace_24x24_product (a,b,z);	// 8*8 wallacetree product
+module wallace_24x24_product (a,b,z);	// 24*24 wallacetree product
 	input [23:0] a;
 	input [23:0] b;
 	output [47:0] z;

@@ -1,5 +1,5 @@
 sim:
-	verilator --cc --exe --build --trace ./csrc/fmul.cpp ./vsrc/fmul.v
+	verilator --cc --exe --build --trace ./csrc/fdiv_newton.cpp ./vsrc/fdiv_newton.v
 pipelined:
 	verilator --cc --exe --build --trace ./csrc/pipelined_fadder.cpp ./vsrc/pipelined_fadder.v
 test:
