@@ -1,6 +1,6 @@
 `include "./vsrc/fdiv/wallace_26x24.v"
 
-module wallace_24x26_product (a,b,x,y,z_low);	// 24*26 wallacetree product
+module wallace_24x26 (a,b,x,y,z_low);	// 24*26 wallacetree
 	input [23:0] a;
 	input [25:0] b;
 	output [49:8] x;

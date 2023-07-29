@@ -1,6 +1,6 @@
 `include "./vsrc/fdiv/wallace_26x24_product.v"
-`include "./vsrc/fdiv/wallace_24x26_product.v"
 `include "./vsrc/fdiv/wallace_26x26_product.v"
+`include "./vsrc/fdiv/wallace_24x26.v"
 
 module newton24 (a,b,fdiv,ena,clk,clrn,q,busy,count,reg_x,stall);
     input [23:0] a;         // dividend: .1xxx...x
@@ -47,7 +47,7 @@ module newton24 (a,b,fdiv,ena,clk,clrn,q,busy,count,reg_x,stall);
                 if ((count == 5'h06) ||                     // 2 3 4 5 6 save result of 1st iteration
                     (count == 5'h0b) ||                     // 7 8 9 10 11 save result of 2nd iteration
                     (count == 5'h10))                       // 12 13 14 15 16 no need to save here actually
-                    reg_x <= x52[50:25];
+                    reg_x <= x52[50:25];		    // xx.xxx...x
             end
         end
     end
@@ -55,19 +55,19 @@ module newton24 (a,b,fdiv,ena,clk,clrn,q,busy,count,reg_x,stall);
     assign stall = fdiv & (count == 0) | busy;
     
     // wallace_26x24
-    wallace_26x24_product bxxi(reg_x, reg_b, bxi);      // xi*b 01.xxx...0*.1xxx...x=0x.xx...x (0.5<xi*b<2.0)
-    wire [25:0] b26 = ~bxi[48:23] + {25'b0, 1'b1};      // 2-xi*b 10.000...0-x.x...x
-    wallace_26x26_product xip1(reg_x, b26, x52);        // xi*(2-xi*b) 01.xxx...0*x.xx...x=0xx.x...x
+    wallace_26x24_product bxxi(reg_x, reg_b, bxi);      // xi*b 01.xxx...0*.1xxx...x=0x.xxx...x (0.5<xi*b<2.0)
+    wire [25:0] b26 = ~bxi[48:23] + {25'b0, 1'b1};      // 2-xi*b 10.000...0-x.x...x=x.xxx...x (b26<2.0)
+    wallace_26x26_product xip1(reg_x, b26, x52);        // xi*(2-xi*b) 01.xxx...0*x.xxx...x=00x.xxx...x (<2.0)
     
     reg [25:0] reg_de_x;        // pipline register in between id and e1,x
     reg [23:0] reg_de_a;        // pipline register in between id and e1,a
     wire [49:0] m_s;            // sum
     wire [49:8] m_c;            // carry
     // wallace_24x26
-    wallace_24x26_product wt(reg_de_a, reg_de_x, m_s[49:8],m_c,m_s[7:0]);   // a*xn 
+    wallace_24x26 wt(reg_de_a, reg_de_x, m_s[49:8],m_c,m_s[7:0]);   // a*xn 
     reg [49:0] a_s;             // pipeline register in between e1 and e2,sum
     reg [49:8] a_c;             // pipeline register in between e1 and e2,carry
-    assign d_x = a_s + {a_c,8'b0};
+    assign d_x = a_s + {a_c,8'b0};	// 0x.xxx...x (<2.0)
     assign e2p = {d_x[48:18],|d_x[17:0]};           // sticky bit
 
     always @ (negedge clrn or posedge clk) begin
