@@ -12,9 +12,9 @@ module shift_even_bits (a,b,sa);	// shift even bits until MSB if 1x or 01
 	assign sa3 = ~|a4[23:16];		// 8-bit 0
 	assign a3 = sa3? {a4[15:0],8'b0} : a4;
 	assign sa2 = ~|a3[23:20];		// 4-bit 0
-	assign a2 = sa2? {a3[19:0],8'b0} : a3;
+	assign a2 = sa2? {a3[19:0],4'b0} : a3;
 	assign sa1 = ~|a2[23:22];		// 2-bit 0
-	assign a1 = sa1? {a2[21:0],8'b0} : a2;
+	assign a1 = sa1? {a2[21:0],2'b0} : a2;
 	assign sa0 = 0;
 	assign b = a1;
 endmodule

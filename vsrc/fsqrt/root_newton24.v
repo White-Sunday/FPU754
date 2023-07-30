@@ -26,7 +26,7 @@ module root_newton24 (d,fsqrt,ena,clk,clrn,q,busy,count,reg_x,stall);
 			count <= 0;
 			busy <= 0;
 			reg_x <= 0;
-		end else if (ena) begin
+		end else begin
 			if (fsqrt & (count==0)) begin
 				count <= 5'b1;		// set count
 				busy <= 1'b1;		// set busy
@@ -64,13 +64,13 @@ module root_newton24 (d,fsqrt,ena,clk,clrn,q,busy,count,reg_x,stall);
 	// pipeline registers
 	always @ (negedge clrn or posedge clk) begin
 		if (!clrn) begin
-			reg_de_x <= 0;	reg_de_d <= 0;
-			a_s <= 0;	a_c <= 0;
-			q <= 0;
+			reg_de_x <= 0;	reg_de_d <= 0;	// id-e1
+			a_s <= 0;	a_c <= 0;			// e1-e2
+			q <= 0;							// e2-e3
 		end else if (ena) begin
-			reg_de_x <= x52[50:25];	reg_de_d <= reg_d;
-			a_s <= m_s;		a_c <= m_c;
-			q <= e2p;
+			reg_de_x <= x52[50:25];	reg_de_d <= reg_d;	// id-e1
+			a_s <= m_s;		a_c <= m_c;					// e1-e2
+			q <= e2p;									// e2-e3
 		end
 	end
 	// a rom table: 1/d^{1/2}

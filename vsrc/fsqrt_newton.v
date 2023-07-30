@@ -50,12 +50,12 @@ module fsqrt_newton (d,rm,fsqrt,ena,clk,clrn,s,busy,stall,count,reg_x);
 			e1_rm<=0;	e2_rm<=0;	e3_rm<=0;
 			e1_exp<=0;	e2_exp<=0;	e3_exp<=0;
 		end else if (ena) begin
-			e1_sign<=sign;		e2_sign<=e1_sign;	e3_sign<=e2_sign;
+			e1_sign<=sign;			e2_sign<=e1_sign;	e3_sign<=e2_sign;
 			e1_e00<=d_expo_is_00;	e2_e00<=e1_e00;		e3_e00<=e2_e00;	
-                	e1_eff<=d_expo_is_ff;	e2_eff<=e1_eff;		e3_eff<=e3_eff;
-                	e1_f00<=d_frac_is_00;	e2_f00<=e1_f00;		e3_f00<=e2_f00;
-                	e1_rm<=rm;		e2_rm<=e1_rm;		e3_rm<=e2_rm;
-                	e1_exp<=exp0;		e2_exp<=e1_exp;		e3_exp<=e2_exp;
+            e1_eff<=d_expo_is_ff;	e2_eff<=e1_eff;		e3_eff<=e3_eff;
+            e1_f00<=d_frac_is_00;	e2_f00<=e1_f00;		e3_f00<=e2_f00;
+            e1_rm<=rm;				e2_rm<=e1_rm;		e3_rm<=e2_rm;
+            e1_exp<=exp0;			e2_exp<=e1_exp;		e3_exp<=e2_exp;
 		end
 	end
 	wire [31:0] frac0;	// root = 1.xxxx...x
@@ -68,7 +68,7 @@ module fsqrt_newton (d,rm,fsqrt,ena,clk,clrn,s,busy,stall,count,reg_x);
 		e3_rm[1] & ~e3_rm[0] & (frac[2] | frac[1] | frac[0]) & ~e3_sign;
 	wire [24:0] frac_round = {1'b0,frac[26:3]} + {24'b0,frac_plus_1};
 	wire [7:0] expo_new = frac_round[24]? e3_exp + 8'h1 : e3_exp;
-	wire [24:0] frac_new = frac_round[24]? frac_round[23:1] : frac_round[22:0];	// unusefull?
+	wire [22:0] frac_new = frac_round[24]? frac_round[23:1] : frac_round[22:0];	// unusefull?
 	assign s = final_result(e3_sign,e3_e00,e3_eff,e3_f00,{e3_sign,expo_new,frac_new});
 	function [31:0] final_result;
 		input d_sign,d_e00,d_eff,d_f00;

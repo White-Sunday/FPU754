@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <verilated.h>
 #include <verilated_vcd_c.h>
-#include "../obj_dir/Vfdiv_newton.h"
+#include "../obj_dir/Vfsqrt_newton.h"
 
 #define step(statements) do { \
 	        contextp->timeInc(1); \
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
 	VerilatedContext *contextp = new VerilatedContext;
 	contextp->commandArgs(argc,argv);
-	Vfdiv_newton *top = new Vfdiv_newton{contextp};
+	Vfsqrt_newton *top = new Vfsqrt_newton{contextp};
 
 	VerilatedVcdC *tfp = new VerilatedVcdC;
 	contextp->traceEverOn(true);
@@ -24,11 +24,9 @@ int main(int argc, char **argv)
 	tfp->open("wave.vcd");
 
 	// init signal
-	// top->a = 0x41000000;
-	// top->b = 0x40800000;
-	top->a = 0x0000fe01;
-	top->b = 0x000000ff;
-	top->fdiv = 0;
+	// top->d = 0x41100000;
+	top->d = 0x41100000;
+	top->fsqrt = 0;
 	top->rm = 0;
 	top->clk = 1;
 	top->clrn = 0;
@@ -36,25 +34,24 @@ int main(int argc, char **argv)
 	top->eval();
 	tfp->dump(contextp->time());
 	step({top->clk=0;top->clrn=1;top->ena = 1;});
-	
 	// ID
 	step({top->clk=1;top->clrn=1;});
-	step({top->clk=0;top->clrn=1;top->fdiv=1;});
+	step({top->clk=0;top->clrn=1;top->fsqrt=1;});
 	// ID stall
 	int i = 0;
-	for (i=0;i<15;++i)
+	for (i=0;i<21;++i)
 	{
 		step({top->clk=1;top->clrn=1;});
 		step({top->clk=0;top->clrn=1;});
 	}
-	step({top->clk=1;top->clrn=1;top->fdiv=0;});
+	step({top->clk=1;top->clrn=1;top->fsqrt=0;});
 	step({top->clk=0;top->clrn=1;});
 	// e1 e2 e3
-	step({top->clk=1;top->clrn=1;});	// mul
+	step({top->clk=1;top->clrn=1;});
 	step({top->clk=0;top->clrn=1;});
 	step({top->clk=1;top->clrn=1;});
 	step({top->clk=0;top->clrn=1;});
-	step({top->clk=1;top->clrn=1;});	// normalization
+	step({top->clk=1;top->clrn=1;});
 	step({top->clk=0;top->clrn=1;});
 	step();
 
